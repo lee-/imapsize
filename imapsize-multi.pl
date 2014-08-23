@@ -98,7 +98,6 @@ sub chkacct {
   # ... and log in
   #
   return 1 unless $imap->login;
-# or die "no login for $username";
 
 
   # request all folders
@@ -106,7 +105,7 @@ sub chkacct {
   my @folders = $imap->folders;
   my $msgsize = 0;
   my $nm = 0;
-  #
+
   # go through all messages in all folders and fetch their size
   #
   foreach my $this (@folders) {
@@ -141,7 +140,7 @@ sub chkacct {
 
   my $subj = "Email quota check: ~ $percent_quota% ($username auf $server)";
   if ($percent_quota >= QUOTA_WARNING_PERCENT) {
-    $subj = "Email quota WARNING";
+    $subj = "Email quota WARNING: ~ $percent_quota% ($username auf $server)";
     $msgbody .= "\nWARNUNG: Das Postfach ist bald voll!\n";
   }
 
@@ -162,23 +161,28 @@ sub chkacct {
 
 my $linecount = 0;
 open my $fh, "<", ACCOUNTLIST;
+
+LINE:
 while (my $line = <$fh>) {
   $linecount++;
-  chomp $line;
-  if (length $line) {
-    my ($srv, $usr, $pwd) = split(',', $line);
-    trim($srv);
-    trim($usr);
-    trim($pwd);
-    if (length($srv) && length($usr) && length($pwd)) {
-      if(1 == chkacct($srv, $usr, $pwd))
-	{
-	  print "login for $usr ($srv) failed\n";
+
+  unless($line =~ m/"^#"/)
+    {
+      chomp $line;
+      if (length $line) {
+	my ($srv, $usr, $pwd) = split(',', $line);
+	trim($srv);
+	trim($usr);
+	trim($pwd);
+	if (length($srv) && length($usr) && length($pwd)) {
+	  if (1 == chkacct($srv, $usr, $pwd)) {
+	    print "login for $usr ($srv) failed\n";
+	  }
+	} else {
+	  printf("syntax error in line %8d\n", $linecount);
 	}
-    } else {
-      printf("syntax error in line %8d\n", $linecount);
+      }
     }
-  }
 }
 close $fh;
 
