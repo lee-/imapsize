@@ -1,24 +1,32 @@
 
+
 imapsize-multi.pl
 
-Check email account(s) via IMAP for how many messages there are and
-compute their total size.  Compute "percentage full" of each
-account, using the specified size-quota, and send an informative
-email about usage.
++ check email account(s) via IMAP for how many messages there are and
+  compute their total size
+
++ compute "percentage full" of each account, using the specified
+  size-quota, and send an informative email about usage
+
++ write the obtained information to a CSV file
 
 
 usage:
 
-+ adjust settings in the script
++ adjust settings below
+
 + create a file listing the IMAP accounts to check, for example:
 
-server1.example.com, user1@example.com, password_user1
-server2.example.com, user2@example.com, password_user2
 
-+ make sure the accounts file cannot be read by unauthorized users!
+server1.example.com, user1@example.com, password_user1, quotaMB
+server2.example.com, user2@example.com, password_user2, quotaMB
+
+
++ make sure the passwords cannot be read by unauthorized users!
+
 + run the script --- you may need to install additional perl modules
-+ you can run the script from your contab to check the accounts regularly
 
++ you can run the script from your contab to check the accounts regularly
 
 
 This program is free software: you can redistribute it and/or
